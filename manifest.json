@@ -1,0 +1,16 @@
+{
+  "manifest_version":2,
+  "name":"Text Changer",
+  "version":"1.0.0",
+  "description":"This extension allows you to change some words for other.",
+  "icons": { "16": "assets/icon16.png",
+             "48": "assets/icon48.png",
+            "128": "assets/icon128.png" },
+  "author": "Márcio Gabriel",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["scripts/change-text.js"]
+    }],
+  "homepage_url":"https://github.com/marcioggs/text-changer-chrome-extension"
+}
