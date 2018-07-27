@@ -14,23 +14,12 @@ function replaceText(text) {
     return text.replaceAll('Google', 'Microsoft');
 }
 
-//TODO: What if Google is a value to an input? How to change only text.
-document.body.innerHTML = replaceText(document.body.innerHTML)
-
 /**
  * Indicates if the given text need to be changed.
- * @param text Text to inspect
+ * @param {String} text Text to inspect
  */
 function hasTextToChange(text) {
     return typeof text == 'string' && text.indexOf("Google") >= 0;
-}
-
-/**
- * Start observing object for relevant changes.
- * @param {MutationObserver} observer Observer
- */
-function startObserving(observer) {
-    observer.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter:  ["value"]});
 }
 
 /**
@@ -75,25 +64,48 @@ function replaceTextOnNodes(nodes) {
     });
 }
 
-const observer = new MutationObserver(function(mutations) {
-    //The observer is disconnected to prevent infinite loop while changing text.
-    observer.disconnect();
+/**
+ * Replaces text on the first page load.
+ */
+function replaceTextOnPageLoad() {
+    replaceTextOnNodes(document.querySelectorAll('body'));
+}
 
-    mutations.forEach((mutation) => {
-        switch(mutation.type) {
-            case 'childList':
-                replaceTextOnNodes(mutation.addedNodes);
-                break;
-            case 'attributes':
-                replaceTextInInputValue(mutation.target);
-                break;
-            case 'characterData':
-                replaceTextInCharacterData(mutation.target);
-                break;
-          }
-      });
-      
+/**
+ * Start observing object for relevant changes.
+ * @param {MutationObserver} observer Observer
+ */
+function startObserving(observer) {
+    observer.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter:  ["value"]});
+}
+
+/**
+ * Replaces text when the page change.
+ */
+function replaceTextOnPageChange() {
+    const observer = new MutationObserver(function(mutations) {
+        //The observer is disconnected to prevent infinite loop while changing text.
+        observer.disconnect();
+    
+        mutations.forEach((mutation) => {
+            switch(mutation.type) {
+                case 'childList':
+                    replaceTextOnNodes(mutation.addedNodes);
+                    break;
+                case 'attributes':
+                    replaceTextInInputValue(mutation.target);
+                    break;
+                case 'characterData':
+                    replaceTextInCharacterData(mutation.target);
+                    break;
+              }
+          });
+          
+        startObserving(observer);
+    });
+    
     startObserving(observer);
-});
+}
 
-startObserving(observer);
+replaceTextOnPageLoad();
+replaceTextOnPageChange();
