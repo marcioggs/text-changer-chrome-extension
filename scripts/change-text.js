@@ -1,4 +1,5 @@
 //TODO: Show badge with number of changed words.
+//TODO: Let the user turn off the badge.
 
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;

@@ -1,0 +1,11 @@
+.form {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+}
+
+.fields-line {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+}
