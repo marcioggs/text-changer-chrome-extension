@@ -1,6 +1,23 @@
 //TODO: Show badge with number of changed words.
 //TODO: Let the user turn off the badge.
 
+let fromText;
+let toText;
+
+/**
+ * Restore the text to be changed.
+ */
+function restoreTextToChange() {
+    return new Promise(function(resolve, reject) {
+        chrome.storage.sync.get(function(items) {
+            fromText = items.fromText;
+            toText = items.toText;
+            
+            (fromText && toText)? resolve() : reject();
+        });
+    });    
+}
+
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
     return target.replace(new RegExp(search, 'g'), replacement);
@@ -11,8 +28,7 @@ String.prototype.replaceAll = function(search, replacement) {
  * @param {String} text Text to be replaced
  */
 function replaceText(text) {
-    //TODO: Replace with words from options.html.
-    return text.replaceAll('Google', 'Microsoft');
+    return text.replaceAll(fromText, toText);
 }
 
 /**
@@ -20,7 +36,7 @@ function replaceText(text) {
  * @param {String} text Text to inspect
  */
 function hasTextToChange(text) {
-    return typeof text == 'string' && text.indexOf("Google") >= 0;
+    return typeof text == 'string' && text.indexOf(fromText) >= 0;
 }
 
 /**
@@ -108,5 +124,11 @@ function replaceTextOnPageChange() {
     startObserving(observer);
 }
 
-replaceTextOnPageLoad();
-replaceTextOnPageChange();
+restoreTextToChange()
+
+.then(function() {
+    replaceTextOnPageLoad();
+    replaceTextOnPageChange();
+})
+
+.catch(function() {});
