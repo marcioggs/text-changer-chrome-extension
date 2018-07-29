@@ -11,8 +11,8 @@ function isObjectEmpty(obj) {
  */
 function setDefaultPreferences() {
     chrome.storage.sync.set({
-        fromText: '',
-        toText: '',
+        fromTextArray: [''],
+        toTextArray: [''],
         hideBadge: false
     });
 }

@@ -1,8 +1,5 @@
-//TODO: Beautify preference's page.
-//TODO: Let the user add more words.
-
-let fromText;
-let toText;
+let fromTextArray;
+let toTextArray;
 let quantityChanged = 0;
 
 /**
@@ -11,10 +8,11 @@ let quantityChanged = 0;
 function restoreTextToChange() {
     return new Promise(function(resolve, reject) {
         chrome.storage.sync.get(function(items) {
-            fromText = items.fromText;
-            toText = items.toText;
+            fromTextArray = items.fromTextArray;
+            toTextArray = items.toTextArray;
             
-            (fromText && toText)? resolve() : reject();
+            //If user hasn't set text to change on preference, reject and do nothing.
+            (fromTextArray[0] && toTextArray[0])? resolve() : reject();
         });
     });    
 }
@@ -26,9 +24,11 @@ String.prototype.replaceAll = function(search, replacement) {
 
 /**
  * Replace text.
- * @param {String} text Text to be replaced
+ * @param {String} text Original text
+ * @param {String} fromText Text to be replaced
+ * @param {String} toText Replaced text
  */
-function replaceText(text) {
+function replaceText(text, fromText, toText) {
     quantityChanged++;
     return text.replaceAll(fromText, toText);
 }
@@ -37,21 +37,19 @@ function replaceText(text) {
  * Indicates if the given text need to be changed.
  * @param {String} text Text to inspect
  */
-function hasTextToChange(text) {
-    return typeof text == 'string' && text.indexOf(fromText) >= 0;
-}
+function getChangedText(text) {
+    let textWasChanged = false;
 
-/**
- * Replaces text on input value attribute, that can be read on the page.
- * @param {Node} node Node to search text to change
- */
-function replaceTextInInputValue(node) {
-    if (node.nodeName.toUpperCase() == 'INPUT') {
-        let text = node.getAttribute('value');
-        if (hasTextToChange(text)) {
-            node.setAttribute('value', replaceText(text));
+    if (typeof text == 'string') {
+        for (let i = 0; i < fromTextArray.length; i++) {
+            if (text.indexOf(fromTextArray[i]) >= 0) {
+                textWasChanged = true;
+                text = replaceText(text, fromTextArray[i], toTextArray[i]);
+            }
         }
-   }
+    }
+
+    return [textWasChanged, text];
 }
 
 /**
@@ -60,9 +58,27 @@ function replaceTextInInputValue(node) {
  */
 function replaceTextInCharacterData(node) {
     let data = node.data;
-    if (hasTextToChange(data)) {
-        node.replaceData(0, data.length, replaceText(data));
+    [textWasChanged, changedText] = getChangedText(data);
+    if (textWasChanged) {
+        node.replaceData(0, data.length, changedText);
     }
+}
+
+
+/**
+ * Replaces text on input value attribute, that can be read on the page.
+ * @param {Node} node Node to search text to change
+ */
+function replaceTextInInputValue(node) {
+    if (node.nodeName.toUpperCase() == 'INPUT') {
+        let text = node.getAttribute('value');
+
+        [textWasChanged, changedText] = getChangedText(text);
+
+        if (textWasChanged) {
+            node.setAttribute('value', changedText);
+        }
+   }
 }
 
 /**

@@ -1,32 +1,57 @@
 <!DOCTYPE html>
 <html>
-<head><title>Preferences</title></head>
+<head>
+    <title>Preferences</title>
+    <link rel="stylesheet" type="text/css" href="../styles/base.css">
+    <link rel="stylesheet" type="text/css" href="../styles/common.css">
+</head>
 <body>
 
-<div class="form">
-    <div class="title">Change Text</div>
-    <div>
-        <div class="fields-line">
-            <span>
+<div class="header">
+    <div class="logo-area">
+        <div class="logo"></div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="title">
+        Extension Preferences
+    </div>
+    <div class="op-section">
+
+        <span id="fromToList">
+            <div>
                 From: 
-                <input type="text" id="fromText" />
-            </span>
-            <span>
+                <input type="text" name="fromText" />
+
                 To: 
-                <input type="text" id="toText" />
-            </span>
-        </div>
-    </div>
-    <div>
-        <input type="checkbox" id="hideBadge" />
-        <label for="hideBadge">Hide badge with ammount of changes.</label>
-    </div>
-    <div>
+                <input type="text" name="toText" />
+                <br />
+            </div>
+        </span>
+
+        <br />
+
+        <button id="addTextChange">Add</button>
+        <button id="removeTextChange">Remove</button>
+
+        <br />
+        <br />
+
+        <label for="hideBadge" class="form-checkbox">
+            <input id="hideBadge" type="checkbox">
+            Hide badge with ammount of changes.
+            <b></b>
+        </label>
+
+        <br />
+
         <button id="save">Save</button>
         <div id="status"></div>
     </div>
 </div>
 
+<script src="../scripts/lib/jquery-3.3.1.slim.min.js"></script>
 <script src="../scripts/options.js"></script>
 
 </body>
