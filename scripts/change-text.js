@@ -1,5 +1,6 @@
-//TODO: Show badge with number of changed words.
 //TODO: Let the user turn off the badge.
+//TODO: Beautify preference's page.
+//TODO: Let the user add more words.
 
 let fromText;
 let toText;
@@ -88,6 +89,7 @@ function replaceTextOnNodes(nodes) {
  */
 function replaceTextOnPageLoad() {
     replaceTextOnNodes(document.querySelectorAll('body'));
+    updateBadge();
 }
 
 /**
@@ -120,6 +122,7 @@ function replaceTextOnPageChange() {
               }
           });
           
+        updateBadge();
         startObserving(observer);
     });
     
@@ -138,7 +141,6 @@ restoreTextToChange()
 .then(function() {
     replaceTextOnPageLoad();
     replaceTextOnPageChange();
-    updateBadge();
 })
 
 .catch(function() {});
