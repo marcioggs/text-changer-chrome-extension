@@ -1,17 +1,40 @@
+$(document).ready(function() {
+    restorePreferences();
+
+    $('#save').click(savePreferences);
+    $('#addEntry').click(addTextChangeEntry);
+    $('#removeEntry').click(removeTextChangeEntry);
+});
+
 /**
- * Turn a NodeList into an array with it's values.
+ * Restores preferences from chrome.storage.
  */
-function turnIntoArrayOfValues(nodeList) {
-    return Array.from(nodeList).map(node => node.value);
+function restorePreferences() {
+    chrome.storage.sync.get(function(items) {
+        for (let i = 0; i < items.fromTextArray.length; i++) {
+            let firstRow = $('#entriesList').find('div:first');
+            let row = (i == 0)? firstRow : firstRow.clone();
+
+            row.find('[name="fromText"]').val(items.fromTextArray[i]);
+            row.find('[name="toText"]').val(items.toTextArray[i]);
+
+            if (i > 0) {
+                $('#entriesList').find('div:last').after(row);
+            }
+        }
+
+        $('#hideBadge').prop('checked', items.hideBadge)
+        updateRemoveButton();
+    });
 }
 
 /**
  * Saves the preferences to chrome.storage.
  */
 function savePreferences() {
-    let fromTextArray = turnIntoArrayOfValues(document.getElementsByName('fromText'));
-    let toTextArray = turnIntoArrayOfValues(document.getElementsByName('toText'));
-    let hideBadge = document.getElementById('hideBadge').checked;
+    let fromTextArray = $('[name="fromText"]').map(function() { return $(this).val()}).toArray();
+    let toTextArray = $('[name="toText"]').map(function() { return $(this).val()}).toArray();
+    let hideBadge = $('#hideBadge').prop('checked');
 
     if (thereIsEmptyElement(fromTextArray.concat(toTextArray))) {
         showStatus('All fields should be filled.');
@@ -53,59 +76,34 @@ function showStatus(text) {
 }
   
 /**
- * Restores preferences from chrome.storage.
+ * Disable Remove button if there is only one row, otherwise enable it.
  */
-function restorePreferences() {
-    chrome.storage.sync.get(function(items) {
-        for (let i = 0; i < items.fromTextArray.length; i++) {
-            let firstRow = $('#fromToList').find('div:first');
-            let row = (i == 0)? firstRow : firstRow.clone();
-
-            row.find('[name="fromText"]').val(items.fromTextArray[i]);
-            row.find('[name="toText"]').val(items.toTextArray[i]);
-
-            if (i > 0) {
-                $('#fromToList').find('div:last').after(row);
-            }
-        }
-
-        document.getElementById('hideBadge').checked = items.hideBadge;
-        updateRemoveButton();
-    });
+function updateRemoveButton() {
+    let disabled = false
+    if ($('#entriesList').find('div').length == 1) {
+        disabled = true;   
+    }
+    $('#removeTextChange').prop('disabled', disabled);
 }
 
 /**
  * Adds a new from/to row to the end of the list.
  */
-$('#addTextChange').click(function() {
-    let lastRow = $('#fromToList').find('div:last');
-    let newRow = $('#fromToList').find('div:first').clone();
+function addTextChangeEntry() {
+    let lastRow = $('#entriesList').find('div:last');
+    let newRow = $('#entriesList').find('div:first').clone();
 
     newRow.find('[name="fromText"]').val('');
     newRow.find('[name="toText"]').val('');
 
     lastRow.after(newRow);
     updateRemoveButton();
-});
+}
 
 /**
  * Removes the last from/to row.
  */
-$('#removeTextChange').click(function() {
-    $('#fromToList').find('div:last').remove();
+function removeTextChangeEntry() {
+    $('#entriesList').find('div:last').remove();
     updateRemoveButton();
-});
-
-/**
- * Disable Remove button if there is only one row, otherwise enable it.
- */
-function updateRemoveButton() {
-    let disabled = false
-    if ($('#fromToList').find('div').length == 1) {
-        disabled = true;   
-    }
-    $('#removeTextChange').prop('disabled', disabled);
 }
-
-document.addEventListener('DOMContentLoaded', restorePreferences);
-document.getElementById('save').addEventListener('click', savePreferences);
