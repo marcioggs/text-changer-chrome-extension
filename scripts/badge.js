@@ -1,4 +1,6 @@
-chrome.browserAction.setBadgeBackgroundColor({color: [0, 0, 0, 255]});
+const blackColor = [0, 0, 0, 255];
+
+chrome.browserAction.setBadgeBackgroundColor({color: blackColor});
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {

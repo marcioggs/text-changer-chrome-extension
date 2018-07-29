@@ -16,7 +16,7 @@ function savePreferences() {
         type: 'hideBadge',
         hideBadge: hideBadge
     });
-  }
+}
 
 /**
  * Update status to let user know options were saved.

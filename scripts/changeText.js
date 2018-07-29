@@ -1,4 +1,3 @@
-//TODO: Let the user turn off the badge.
 //TODO: Beautify preference's page.
 //TODO: Let the user add more words.
 
