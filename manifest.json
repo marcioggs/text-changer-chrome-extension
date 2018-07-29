@@ -10,7 +10,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["scripts/change-text.js"]
+      "js": ["scripts/changeText.js"]
     }],
   "options_page": "pages/options.html",
   "homepage_url":"https://github.com/marcioggs/text-changer-chrome-extension",
@@ -19,7 +19,7 @@
   ],
   "browser_action": {},
   "background": {
-    "scripts": ["scripts/update-badge.js"],
+    "scripts": ["scripts/onInstalled.js", "scripts/badge.js"],
     "persistent": false
   }
 }

@@ -133,7 +133,10 @@ function replaceTextOnPageChange() {
  * Updates badge.
  */
 function updateBadge() {
-    chrome.runtime.sendMessage({quantityChanged: '' + quantityChanged});
+    chrome.runtime.sendMessage({
+        type: 'updateBadge',
+        quantityChanged: '' + quantityChanged
+    });
 }
 
 restoreTextToChange()
