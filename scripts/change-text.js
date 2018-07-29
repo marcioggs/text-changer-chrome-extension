@@ -3,6 +3,7 @@
 
 let fromText;
 let toText;
+let quantityChanged = 0;
 
 /**
  * Restore the text to be changed.
@@ -28,6 +29,7 @@ String.prototype.replaceAll = function(search, replacement) {
  * @param {String} text Text to be replaced
  */
 function replaceText(text) {
+    quantityChanged++;
     return text.replaceAll(fromText, toText);
 }
 
@@ -124,11 +126,19 @@ function replaceTextOnPageChange() {
     startObserving(observer);
 }
 
+/**
+ * Updates badge.
+ */
+function updateBadge() {
+    chrome.runtime.sendMessage({quantityChanged: '' + quantityChanged});
+}
+
 restoreTextToChange()
 
 .then(function() {
     replaceTextOnPageLoad();
     replaceTextOnPageChange();
+    updateBadge();
 })
 
 .catch(function() {});

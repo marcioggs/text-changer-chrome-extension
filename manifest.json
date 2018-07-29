@@ -1,5 +1,5 @@
 {
-  "manifest_version":2,
+  "manifest_version": 2,
   "name":"Text Changer",
   "version":"1.0.0",
   "description":"This extension allows you to change some words for other.",
@@ -16,5 +16,10 @@
   "homepage_url":"https://github.com/marcioggs/text-changer-chrome-extension",
   "permissions": [
     "storage"
-  ]
+  ],
+  "browser_action": {},
+  "background": {
+    "scripts": ["scripts/update-badge.js"],
+    "persistent": false
+  }
 }
