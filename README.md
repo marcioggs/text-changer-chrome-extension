@@ -1,3 +1,5 @@
 # Text Changer Chrome Extension
 
-This is a Chrome extension that allows you to change some words for other.
+This Chrome extension lets you change text on pages that you navigate.
+
+![Application Demo](assets/github/demo.gif)
